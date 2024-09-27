@@ -16,10 +16,9 @@ senal_alarma_bloqueo)
 
      localparam espera_llegada_vehiculo     = 6'b000001;
      localparam vehiculo_ha_llegado         = 6'b000010;
-     localparam primera_clave_incorrecta    = 6'b000100;
-     localparam segunda_clave_incorrecta    = 6'b001000;
-     localparam bloqueo_de_puerta           = 6'b010000;
-     localparam ingresando_vehiculo         = 6'b100000;
+     localparam clave_incorrecta            = 6'b000100;
+     localparam bloqueo_de_puerta           = 6'b001000;
+     localparam ingresando_vehiculo         = 6'b010000;
 
      reg [1:0] cuenta_intentos = 2'b00;
      reg [1:0] proxima_cuenta_intentos = 2'b00;
@@ -42,7 +41,117 @@ senal_alarma_bloqueo)
           proximo_estado = estado; 
           proxima_cuenta_intentos = cuenta_intentos;
 
-     
+          case(estado)
+               // Se espera la llegada de un vehículo (estado inicial)
+               espera_llegada_vehiculo:
+                    begin
+                         if (sensor_ingreso_vehiculo && sensor_llegada_vehiculo) 
+                         begin
+                              senal_alarma_bloqueo = activado;
+                              proximo_estado = bloqueo_de_puerta;
+                         end
+                    else
+                         begin  
+                              if (sensor_llegada_vehiculo && ~sensor_ingreso_vehiculo) proximo_estado = vehiculo_ha_llegado; 
+                              else proximo_estado = espera_llegada_vehiculo;
+                         end
+                    end
+               // Ha llegado un vehículo
+               vehiculo_ha_llegado: 
+                    begin
+                         if (sensor_ingreso_vehiculo && sensor_llegada_vehiculo) 
+                         begin
+                              senal_alarma_bloqueo = activado;
+                              proximo_estado = bloqueo_de_puerta;
+                         end
+                         else
+                              begin  
+                                   if (clave == clave_correcta) proximo_estado = ingresando_vehiculo; 
+                                   else proximo_estado = clave_incorrecta;
+                         end
+                    end
+
+               // Se ha introducido por primera vez una clave incorrecta 
+               clave_incorrecta:                              
+                    begin
+                         if (sensor_ingreso_vehiculo && sensor_llegada_vehiculo) 
+                         begin
+                              senal_alarma_bloqueo = acivado;
+                              proximo_estado = bloqueo_de_puerta;
+                         end
+                         else
+                         begin  
+
+                              if (clave = clave_correcta) 
+                              begin
+                                   senal_compuerta = activado;
+                                   senal_alarma_pin = ~activado;
+                                   proxima_cuenta_intentos ++;
+                                   proximo_estado = ingresando_vehiculo; 
+                              end
+                              else 
+                              begin
+                                   if(cuenta < 2'b11) proxima_cuenta = cuenta+1;
+                                   else senal_alarma_pin = activado;
+                              end
+                         end
+                    end
+               
+               
+               // Se ha bloqueado la compuerta
+               bloqueo_de_puerta: 
+                    begin
+                    if (sensor_ingreso_vehiculo && sensor_llegada_vehiculo)
+                         begin
+                              senal_alarma_bloqueo = activado;
+                              proximo_estado = bloqueo_de_puerta;
+                         end
+                    else
+                         begin
+                              if(clave = clave_correcta) 
+                              begin
+                                   senal_alarma_bloqueo = ~activado;
+                                   proximo_estado = espera_llegada_vehiculo;
+                              end
+                              else proximo_estado = bloqueo_de_puerta;
+                         end
+                    end
+               
+               
+               
+               // Un vehículo está ingresando
+               ingresando_vehiculo: 
+                    begin
+                    if (sensor_ingreso_vehiculo && sensor_llegada_vehiculo)
+                         begin
+                              senal_alarma_bloqueo = activado;
+                              proximo_estado = bloqueo_de_puerta;
+                         end
+                    else 
+                    begin 
+                         if (sensor_ingreso_vehiculo && ~sensor_llegada_vehiculo)
+                         begin
+                              senal_alarma_bloqueo = ~activado;
+                              senal_compuerta = ~activado;
+                              proximo_estado = espera_llegada_vehiculo;
+                         end
+                         else
+                         begin
+                              if (~sensor_ingreso_vehiculo && ~sensor_llegada_vehiculo)
+                              begin
+                              senal_compuerta = activado;
+                              proximo_estado = ingresando_vehiculo;
+                              end
+                              else 
+                              begin
+                                   senal_compuerta = activado;
+                                   proximo_estado = ingresando_vehiculo;
+                              end         
+                         end
+                    end  
+
+                    default:   proximo_estado = espera_llegada_vehiculo; 
+          endcase
 
      end
 endmodule
