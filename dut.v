@@ -5,26 +5,26 @@ sensor_llegada_vehiculo,
 clave_ingresada, 
 senal_compuerta,
 senal_alarma_pin,
-senal_alarma_bloqueo)
+senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
 
      input wire clock, reset; 
      input wire sensor_llegada_vehiculo, sensor_ingreso_vehiculo;
-     input wire [7:0] clave_ingresada;
+     input wire [15:0] clave_ingresada;
      output reg senal_compuerta, senal_alarma_pin, senal_alarma_bloqueo;
 
 
 
-     localparam espera_llegada_vehiculo     = 6'b000001;
-     localparam vehiculo_ha_llegado         = 6'b000010;
-     localparam clave_incorrecta            = 6'b000100;
-     localparam bloqueo_de_puerta           = 6'b001000;
-     localparam ingresando_vehiculo         = 6'b010000;
+     localparam espera_llegada_vehiculo     = 5'b00001;
+     localparam vehiculo_ha_llegado         = 5'b00010;
+     localparam clave_incorrecta            = 5'b00100;
+     localparam bloqueo_de_puerta           = 5'b01000;
+     localparam ingresando_vehiculo         = 5'b10000;
 
      reg [1:0] cuenta_intentos = 2'b00;
      reg [1:0] proxima_cuenta_intentos = 2'b00;
 
-     reg [7:0] estado_actual = 6'b000000;
-     reg [7:0] proximo_estado = 6'b000000;
+     reg [6:0] estado_actual = 5'b00000;
+     reg [6:0] proximo_estado = 5'b00000;
 
      always @(posedge clock) begin
           if (reset) begin
