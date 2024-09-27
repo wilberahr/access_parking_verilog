@@ -28,3 +28,13 @@ module testbench
           .senal_alarma_bloqueo(signal_alarma_bloqueo)
      );
 
+     tester SIMULACION(
+          .clock(clk), 
+          .reset(rst), 
+          .sensor_ingreso_vehiculo(s_ingreso_vehiculo),
+          .sensor_llegada_vehiculo(s_llegada_vehiculo),
+          .clave_ingresada(clave), 
+          .senal_compuerta(signal_compuerta),
+          .senal_alarma_pin(signal_alarma_pin),
+          .senal_alarma_bloqueo(signal_alarma_bloqueo)
+     ):
