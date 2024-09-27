@@ -10,14 +10,14 @@ module testbench
 
      initial begin
           $dumpfile("resusultados.vcd")
-          $dumpvars(-1,dispsitivo);
+          $dumpvars(-1,DUT);
           $monitor("s_llegada_vehiculo = %b, s_ingreso_vehiculo = %b ,signal_compuerta = %b, signal_alarma_bloqueo = %b, signal_alarma_pin = %b"
                     s_llegada_vehiculo,s_ingreso_vehiculo,signal_compuerta,signal_alarma_bloqueo,signal_alarma_pin)
 
      end
 
 
-     access dispsitivo(
+     access DUT(
           .clock(clk), 
           .reset(rst), 
           .sensor_ingreso_vehiculo(s_ingreso_vehiculo),
@@ -28,4 +28,3 @@ module testbench
           .senal_alarma_bloqueo(signal_alarma_bloqueo)
      );
 
-     
