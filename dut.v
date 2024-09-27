@@ -21,7 +21,8 @@ senal_alarma_bloqueo)
      localparam bloqueo_de_puerta           = 6'b010000;
      localparam ingresando_vehiculo         = 6'b100000;
 
-     localparam cuenta_intentos = 2'b00;
+     reg [1:0] cuenta_intentos = 2'b00;
+     reg [1:0] proxima_cuenta_intentos = 2'b00;
 
      reg [7:0] estado_actual = 6'b000000;
      reg [7:0] proximo_estado = 6'b000000;
@@ -32,7 +33,16 @@ senal_alarma_bloqueo)
                cuenta_intentos <= 2'b00;  
           end else begin
                estado  <= proximo_estado;
-               cuenta_intentos <= proxima_cuenta;
+               cuenta_intentos <= proxima_cuenta_intentos;
           end
+     end
+
+     always @(*) begin
+
+          proximo_estado = estado; 
+          proxima_cuenta_intentos = cuenta_intentos;
+
+     
+
      end
 endmodule
