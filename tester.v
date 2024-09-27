@@ -35,6 +35,7 @@ module tester(
      #20 sensor_llegada_vehiculo = 1;
      // Ingreso del pin correcto y apertura de puerta
      #20 clave_ingresada = 4'h3257;
+     $display("Apertura de puerta= %b",signal_compuerta);
      // Sensor de fin de entrada y cierre de compuerta.
      #20 sensor_ingreso_vehiculo = 0;
      
@@ -46,10 +47,17 @@ module tester(
      #20 sensor_llegada_vehiculo = 1;
      // Ingreso de pin incorrecto (una o dos veces), puerta permanece cerrada. 
      #20 clave_ingresada = 4'h7523;
+     $display("Apertura de puerta= %b",signal_compuerta);
+     $display("Intentos incorrectos= %d",cuenta_intentos);
      #20 clave_ingresada = 4'h4368;
+     $display("Intentos incorrectos= %d",cuenta_intentos);
+     $display("Apertura de puerta= %b",signal_compuerta);
+     $display("Intentos incorrectos= %d",cuenta_intentos);
      // Ingreso de pin correcto, funcionamiento normal básico. 
      #20 clave_ingresada = 4'h3257;
+     $display("Apertura de puerta= %b",signal_compuerta);
      // Revisión de contador de intentos incorrectos.
+     $display("Intentos incorrectos= %d",cuenta_intentos);
 
 
      //////////////////////////////////////////
@@ -58,13 +66,15 @@ module tester(
      #20 clave_ingresada = 4'h4368;
      #20 clave_ingresada = 4'h2656;
      // Revisión de alarma de pin incorrecto.
-     
+     $display("Alarma de pin= %b",signal_alarma_pin);
      // Revisión de contador de intentos incorrectos. 
-     
+     $display("Intentos incorrectos= %d",cuenta_intentos);
      // Ingreso de pin correcto, funcionamiento normal básico. 
      #20 clave_ingresada = 4'h3257;
      // Revisión de limpieza de contadores y alarmas.
-
+     $display("Intentos incorrectos= %d",cuenta_intentos);
+     $display("Alarma de bloqueo= %b",signal_alarma_bloqueo);
+     $display("Alarma de pin= %b",signal_alarma_pin);
      //////////////////////////////////////////
      //Prueba 4: alarma de bloqueo
      //
@@ -72,13 +82,17 @@ module tester(
      #20 sensor_llegada_vehiculo = 1;
      #0 sensor_ingreso_vehiculo = 1;
      // Encendido de alarma de bloqueo, 
-     
+     $display("Alarma de bloqueo= %b",signal_alarma_bloqueo);
      // Ingreso de clave incorrecta, bloqueo permanece. 
      #20 clave_ingresada = 4'h5479;
+     $display("Apertura de puerta= %b",signal_compuerta);
+     $display("Alarma de bloqueo= %b",signal_alarma_bloqueo);
      // Ingreso de clave correcta, desbloqueo. 
      #20 clave_ingresada = 4'h3257;
      // Funcionamiento normal básico.
-
+     $display("Apertura de puerta= %b",signal_compuerta);
+     $display("Alarma de bloqueo= %b",signal_alarma_bloqueo);
+     $display("Alarma de pin= %b",signal_alarma_pin);
      #200 $finish;
      end
 
@@ -86,7 +100,7 @@ module tester(
      #5 clock = !clock;
      end
 
-
+   
      
 
 endmodule
