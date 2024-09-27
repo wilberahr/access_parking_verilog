@@ -13,4 +13,16 @@ senal_alarma_bloqueo)
      output reg senal_compuerta, senal_alarma_pin, senal_alarma_bloqueo;
 
 
+
+     localparam espera_llegada_vehiculo     = 6'b000001;
+     localparam vehiculo_ha_llegado         = 6'b000010;
+     localparam primera_clave_incorrecta    = 6'b000100;
+     localparam segunda_clave_incorrecta    = 6'b001000;
+     localparam bloqueo_de_puerta           = 6'b010000;
+     localparam ingresando_vehiculo         = 6'b100000;
+
+     reg [7:0] estado_actual = 6'b000000;
+     reg [7:0] proximo_estado = 6'b000000;
+
+     
 endmodule
