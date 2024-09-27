@@ -5,7 +5,7 @@ module testbench
 
      wire clk, rst; 
      wire s_llegada_vehiculo, s_ingreso_vehiculo;
-     wire [15:0] clave;
+     wire [15:0] clave_ingresada;
      wire signal_compuerta, signal_alarma_pin, signal_alarma_bloqueo;
 
      initial begin

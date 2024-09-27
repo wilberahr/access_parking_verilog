@@ -3,7 +3,7 @@ module tester(
      reset, 
      sensor_ingreso_vehiculo,
      sensor_llegada_vehiculo,
-     clave, 
+     clave_ingresada, 
      senal_compuerta,
      senal_alarma_pin,
      senal_alarma_bloqueo)
