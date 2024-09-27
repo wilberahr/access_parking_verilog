@@ -71,7 +71,7 @@ senal_alarma_bloqueo)
                          end
                     end
 
-               // Se ha introducido por primera vez una clave incorrecta 
+               // Se ha intruducido clave incorrecta
                clave_incorrecta:                              
                     begin
                          if (sensor_ingreso_vehiculo && sensor_llegada_vehiculo) 
@@ -82,17 +82,30 @@ senal_alarma_bloqueo)
                          else
                          begin  
 
-                              if (clave = clave_correcta) 
+                              if(cuenta_intentos < 3)
                               begin
-                                   senal_compuerta = activado;
-                                   senal_alarma_pin = ~activado;
-                                   proxima_cuenta_intentos ++;
-                                   proximo_estado = ingresando_vehiculo; 
+                                   if (clave = clave_correcta) 
+                                   begin
+                                        senal_compuerta = activado;
+                                        senal_alarma_pin = ~activado;
+                                        proxima_cuenta_intentos  = 0;
+                                        proximo_estado = ingresando_vehiculo; 
+                                   end
+                                   else
+                                   begin
+                                        proximo_estado = clave_incorrecta;
+                                        proxima_cuenta_intentos ++;
+
+
+                                   end
+
                               end
-                              else 
+                              else
                               begin
-                                   if(cuenta < 2'b11) proxima_cuenta = cuenta+1;
-                                   else senal_alarma_pin = activado;
+                                   proximo_estado = bloqueo_de_puerta;
+                                   senal_alarma_pin = activado;
+                                   proxima_cuenta = 0;
+
                               end
                          end
                     end
