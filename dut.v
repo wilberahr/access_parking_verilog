@@ -104,7 +104,7 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
                               begin
                                    proximo_estado = bloqueo_de_puerta;
                                    senal_alarma_pin = activado;
-                                   proxima_cuenta = 0;
+                                   proxima_cuenta_intentos = 0;
 
                               end
                          end
@@ -152,8 +152,8 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
                          begin
                               if (~sensor_ingreso_vehiculo && ~sensor_llegada_vehiculo)
                               begin
-                              senal_compuerta = activado;
-                              proximo_estado = ingresando_vehiculo;
+                                   senal_compuerta = activado;
+                                   proximo_estado = ingresando_vehiculo;
                               end
                               else 
                               begin
