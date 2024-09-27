@@ -27,7 +27,7 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
      reg [6:0] proximo_estado = 5'b00000;
 
      always @(posedge clock) begin
-          if (reset) begin
+          if (!reset) begin
                estado  <= espera_llegada_vehiculo;
                cuenta_intentos <= 2'b00;  
           end else begin
