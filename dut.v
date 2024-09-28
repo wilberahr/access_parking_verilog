@@ -1,19 +1,17 @@
-module access(clock, 
-reset, 
-sensor_ingreso_vehiculo,
-sensor_llegada_vehiculo,
-clave_ingresada, 
-senal_compuerta,
-senal_alarma_pin,
-senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
-
-     input wire clock, reset; 
-     input wire sensor_llegada_vehiculo, sensor_ingreso_vehiculo;
-     input wire [15:0] clave_ingresada;
-     output reg senal_compuerta, senal_alarma_pin, senal_alarma_bloqueo;
+module access #(parameter CLAVE_CORRECTA = 16'h2468) (
+     input wire clock, reset, 
+     input wire sensor_llegada_vehiculo, sensor_ingreso_vehiculo,
+     input wire [15:0] clave_ingresada,
+     output reg senal_compuerta, senal_alarma_pin, senal_alarma_bloqueo
+);
+// Revisar: https://www.chipverify.com/verilog/verilog-parameters
+//Poner parametros en mayuscula para diferenciarlo de variables internas
 
 
 
+
+ //    localparam CLAVE_CORRECTA = CLAVE_CORRECTA;
+     localparam activado = 1'b1;
      localparam espera_llegada_vehiculo     = 5'b00001;
      localparam vehiculo_ha_llegado         = 5'b00010;
      localparam clave_incorrecta            = 5'b00100;
@@ -28,20 +26,20 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
 
      always @(posedge clock) begin
           if (!reset) begin
-               estado  <= espera_llegada_vehiculo;
+               estado_actual  <= espera_llegada_vehiculo;
                cuenta_intentos <= 2'b00;  
           end else begin
-               estado  <= proximo_estado;
+               estado_actual  <= proximo_estado;
                cuenta_intentos <= proxima_cuenta_intentos;
           end
      end
 
      always @(*) begin
 
-          proximo_estado = estado; 
+          proximo_estado = estado_actual; 
           proxima_cuenta_intentos = cuenta_intentos;
 
-          case(estado)
+          case(estado_actual)
                // Se espera la llegada de un vehículo (estado inicial)
                espera_llegada_vehiculo:
                     begin
@@ -66,7 +64,7 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
                          end
                          else
                               begin  
-                                   if (clave == clave_correcta) proximo_estado = ingresando_vehiculo; 
+                                   if (clave_ingresada == CLAVE_CORRECTA) proximo_estado = ingresando_vehiculo; 
                                    else proximo_estado = clave_incorrecta;
                          end
                     end
@@ -76,7 +74,7 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
                     begin
                          if (sensor_ingreso_vehiculo && sensor_llegada_vehiculo) 
                          begin
-                              senal_alarma_bloqueo = acivado;
+                              senal_alarma_bloqueo = activado;
                               proximo_estado = bloqueo_de_puerta;
                          end
                          else
@@ -84,7 +82,7 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
 
                               if(cuenta_intentos < 3)
                               begin
-                                   if (clave = clave_correcta) 
+                                   if (clave_ingresada == CLAVE_CORRECTA) 
                                    begin
                                         senal_compuerta = activado;
                                         senal_alarma_pin = ~activado;
@@ -121,7 +119,7 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
                          end
                     else
                          begin
-                              if(clave = clave_correcta) 
+                              if(clave_ingresada == CLAVE_CORRECTA) 
                               begin
                                    senal_alarma_bloqueo = ~activado;
                                    proximo_estado = espera_llegada_vehiculo;
@@ -162,7 +160,7 @@ senal_alarma_bloqueo) #(parameter clave_ingresada = 4'h2468)
                               end         
                          end
                     end  
-
+               end
                     default:   proximo_estado = espera_llegada_vehiculo; 
           endcase
 
