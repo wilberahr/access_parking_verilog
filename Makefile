@@ -11,8 +11,9 @@ TESTS_DIR = ./tests
 # Directorio de archivos de compilacion .out
 BIN_DIR = ./bin
 # Directorio de archivos de yosis
-YOSIS_DIR = $(SRC_DIR)/yosis
+SCRIPTS_DIR = ./scripts
 
+DIR = $(SRC_DIR) $(LIB_DIR) $(BUILD_DIR) $(SIM_DIR) $(TESTS_DIR) $(SCRIPTS_DIR)
 # Compilador 
 COMPILER = iverilog
 # Banderas del compilador
