@@ -18,8 +18,6 @@ $(TARGET): $(OUTPUT)
 $(OUTPUT): $(TESTBENCH)
 	iverilog -o $(OUTPUT) $(TESTBENCH)
 
-$(DUT_FILE)_synth.v: $(YS)
-	yosis -s $(YS)
 
 $(SYNYH_FILE): $(YS)
 	yosis -s $(YS)
