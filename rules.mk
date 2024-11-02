@@ -1,41 +1,23 @@
 
 all: yosis gtkwave iverilog simulation dir
 
-dir: $(SRC_DIR) $(LIB_DIR) $(BUILD_DIR) $(SIM_DIR) $(TESTS_DIR) $(SCRIPT_DIR)
+#dir: $(SRC_DIR) $(LIB_DIR) $(BUILD_DIR) $(SIM_DIR) $(TESTS_DIR) $(SCRIPTS_DIR)
+dir: $(DIR)
+	mkdir -p $^
 
-
-$(SRC_DIR):
-	mkdir -p $(SRC_DIR)
-	
-$(LIB_DIR):
-	mkdir -p $(LIB_DIR)
-	
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-	
-$(SIM_DIR):
-	mkdir -p $(SIM_DIR)
-
-$(TESTS_DIR):
-	mkdir -p $(TESTS_DIR)
-
-$(SCRIPT_DIR):
-	mkdir -p $(SCRIPT_DIR)
-
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
 
 #TODO agregar los .PHONY yosis gtkwave iverilog simulation dir
 
 yosis: $(SYNYH_FILE)
-	$(SYNYH_FILE)
 	
-gtkwave: $(TARGET)
-	gtkwave $(TARGET) 
+gtkwave: $(BUILD_DIR)/$(TARGET).vcd
+	gtkwave $(BUILD_DIR)/$(TARGET).vcd 
 
 iverilog: $(OUTPUT)
 
-yosis_simulation: yosis
+design_simulation:
+
+circuit_simulation: 
 	iverilog -o $(OUTPUT)_synth $(TESTBENCH)
 	vpp $(OUTPUT)_synth
 	gtkwave $(TARGET)_synth.vcd
@@ -71,11 +53,10 @@ $(YS): $(DUT).ys
 $(BIN_DIR)/%.out: $(SRC_DIR)/%.v
 	iverilog -o $@ $<
 
-%.vcd: $(BIN_DIR)/%.out
+$(BUILD_DIR)/%.vcd: $(BIN_DIR)/%.out
 	vpp $<
-	gtkwave $@
 
-%.ys: %_DUT.v $(CMOS_LIB)
+$(SCRIPTS_DIR)/%.ys: $(SRC_DIR)/%_DUT.v $(CMOS_LIB)
 	touch -p $@
 	echo "read_verilog $<" >>  $@
 	echo "hierarchy -check -top $(%)" >> $@
@@ -98,3 +79,24 @@ clear:
 	rm salida
 	rm salidaYosis
 	rm resultados.vcd
+
+#	#$(SRC_DIR):
+#	mkdir -p $(SRC_DIR)
+	
+#$(LIB_DIR):
+#	mkdir -p $(LIB_DIR)
+	
+#$(BUILD_DIR):
+#	mkdir -p $(BUILD_DIR)
+	
+#$(SIM_DIR):
+#	mkdir -p $(SIM_DIR)
+
+#$(TESTS_DIR):
+#	mkdir -p $(TESTS_DIR)
+
+#$(SCRIPTS_DIR):
+#	mkdir -p $(SCRIPTS_DIR)
+
+#$(BIN_DIR):
+#	mkdir -p $(BIN_DIR)
