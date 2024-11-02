@@ -52,6 +52,8 @@ $(OUTPUT): $(TESTBENCH)
 $(SYNYH_FILE): $(YS)
 	yosis -s $(YS)
 
+$(YS): $(DUT).ys
+
 
 #$(YS): $(DUT_FILE) $(CMOS_LIB) $(DUT).ys
 #	echo "read_verilog $(DUT_FILE)" >>  $(DUT).ys
@@ -83,7 +85,7 @@ $(BIN_DIR)/%.out: $(SRC_DIR)/%.v
 	echo "abc -liberty $(CMOS_LIB)" >> $@
 	echo "show" >> $@
 	echo "clean" >> $@
-	echo "write_verilog $<_synth.v" >> $@ 
+	echo "write_verilog synth_$<" >> $@ 
 
 #TODO: regla clean y clear
 #TODO agregar los .PHONY
