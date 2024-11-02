@@ -1,9 +1,14 @@
 all: yosis gtkwave iverilog simulation
 
-yosis: $(DUT_file)_synth.v
-	yosis -s $(YS)
+yosis: $(SYNYH_FILE)
+	
 gtkwave: $(TARGET)
 	gtkwave $(TARGET) 
+
+iverilog: $(OUTPUT)
+
+simulation: $(TARGET)
+
 
 
 $(TARGET): $(OUTPUT) 
@@ -13,12 +18,15 @@ $(TARGET): $(OUTPUT)
 $(OUTPUT): $(TESTBENCH)
 	iverilog -o $(OUTPUT) $(TESTBENCH)
 
-$(DUT_file)_synth.v: $(YS)
+$(DUT_FILE)_synth.v: $(YS)
 	yosis -s $(YS)
 
-$(YS): $(DUT_file) $(SRC_files) $(CMOS_LIB) $(DUT_file)
-	read_verilog $(DUT_file).v
-	hierarchy -check -top $(DUT_file)
+$(SYNYH_FILE): $(YS)
+	yosis -s $(YS)
+
+$(YS): $(DUT_FILE) $(CMOS_LIB) $(DUT_FILE)
+	read_verilog $(DUT_FILE).v
+	hierarchy -check -top $(DUT)
 	proc
 	opt
 	fsm
@@ -28,5 +36,7 @@ $(YS): $(DUT_file) $(SRC_files) $(CMOS_LIB) $(DUT_file)
 	techmap
 	opt
 	dfflibmap -liberty ./$(CMOS_LIB)
+	abc -liberty ./cmos_cells.lib
 	show
-	write_verilog $(DUT_file)_synth.v  
+	clean
+	write_verilog $(SYNYH_FILE) 
