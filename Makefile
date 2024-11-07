@@ -30,7 +30,12 @@ CMOS_LIB= $(LIB_DIR)/cmos_cells.lib
 YS = $(DUT).ys
 #TODO: Ver si se cambian o eliminan variablaes
 TARGET = resultados_$(DUT)
-OUTPUT = $(DUT)
+OUTPUT = $(DUT).out
 
 TESTBENCH= testbench.v
 TESTER= tester.v
+
+tarea: $(TESTBENCH)
+	$(COMPILER) $(FLAGS) $(OUTPUT) $(TESTBENCH)
+	vpp $(OUTPUT)
+	GTKWAVE $(TARGET) 
