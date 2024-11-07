@@ -23,11 +23,11 @@ DUT = dut
 # Nombre del archivo del DUT
 DUT_FILE= $(DUT).v
 # Nombre del archivo del DUT sintetizado
-SYNYH_FILE = $(DUT)_synth.v
+SYNYH_FILE = $(SRC_DIR)/$(DUT)_synth.v
 # Biblioteca de archivos liberty
 CMOS_LIB= $(LIB_DIR)/cmos_cells.lib 
 # Archivo .ys de receta para yosis
-YS = $(DUT).ys
+YS = $(SCRIPTS_DIR)/$(DUT).ys
 #TODO: Ver si se cambian o eliminan variablaes
 TARGET = resultados_$(DUT)
 OUTPUT = $(DUT).out

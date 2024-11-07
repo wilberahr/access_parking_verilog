@@ -18,7 +18,7 @@ iverilog: $(OUTPUT)
 design_simulation:
 
 circuit_simulation: 
-	iverilog -o $(OUTPUT)_synth $(TESTBENCH)
+	iverilog -o synth_$(OUTPUT) $(TESTBENCH)
 	vpp $(OUTPUT)_synth
 	gtkwave $(TARGET)_synth.vcd
 
@@ -54,10 +54,11 @@ $(BIN_DIR)/%.out: $(SRC_DIR)/%.v
 	iverilog -o $@ $<
 
 $(BUILD_DIR)/%.vcd: $(BIN_DIR)/%.out
-	vpp $<
+	touch -p simulation.log
+	vpp $< >> simulation.log
 
 $(SCRIPTS_DIR)/%.ys: $(SRC_DIR)/%_DUT.v $(CMOS_LIB)
-	touch -p $@
+	touch -p $@.log
 	echo "read_verilog $<" >>  $@
 	echo "hierarchy -check -top $(%)" >> $@
 	echo "proc; opt; fsm; opt; memory; opt" >> $@
